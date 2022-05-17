@@ -3,12 +3,12 @@
     <div class="apartlist">
       <ul class="apart_list">
         <li class="thead">
-          <strong>거래금액</strong>
-          <strong>건축년도</strong>
-          <strong>도로명</strong>
-          <strong>전용면적</strong>
-          <strong>층수</strong>
-          <strong>중개사소재지</strong>
+          <strong class="price">거래금액</strong>
+          <strong class="year">건축년도</strong>
+          <strong class="roadName">도로명</strong>
+          <strong class="size">전용면적</strong>
+          <strong class="floor">층수</strong>
+          <strong class="brooker">중개사소재지</strong>
         </li>
         <li v-if="items.length === 0">아파트 정보가 없습니다.</li>
         <li v-for="(item, i) in items" :key="i">
@@ -21,18 +21,40 @@
         </li>
       </ul>
     </div>
+    <div class="apartArea">
+      <GoogleMap
+        api-key="AIzaSyC7gZadc_Ii_L7aW_U-vOAiYJ-_yDYY4ig"
+        style="width: 100%; height: 500px"
+        :center="center"
+        :zoom="15"
+      >
+        <Marker :options="markerOptions" />
+      </GoogleMap>
+    </div>
   </div>
 </template>
 
 <script>
 import axios from "axios";
-export default {
+import { defineComponent } from "vue";
+import { GoogleMap, Marker } from "vue3-google-map";
+export default defineComponent({
   name: "App",
-  components: {},
   data() {
     return {
       items: [],
     };
+  },
+  components: { GoogleMap, Marker },
+  setup() {
+    const center = { lat: 40.689247, lng: -74.044502 };
+    const markerOptions = {
+      position: center,
+      label: "L",
+      title: "LADY LIBERTY",
+    };
+
+    return { center, markerOptions };
   },
   async mounted() {
     await this.getApartList();
@@ -77,7 +99,29 @@ export default {
         });
     },
   },
-};
+});
 </script>
 
-<style></style>
+<style scoped>
+.apart_list {
+  position: relative;
+}
+.apart_list > li {
+  display: table;
+  width: 50%;
+  border-bottom: 1px solid #ebebeb;
+  table-layout: fixed;
+  text-align: center;
+}
+.apart_list > li.thead {
+  background-color: #f5f5f5;
+}
+.apart_list > li > div,
+.apart_list > li > strong {
+  display: table-cell;
+  padding: 10px;
+}
+.apart_list > li > .brooker {
+  width: 130px;
+}
+</style>
